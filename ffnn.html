@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Speed Test & Nearby Networks</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 40px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #42e695 0%, #3bb2b8 100%);
+            color: white;
+            cursor: pointer;
+            margin: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        #result {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 1.5em;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .spinner {
+            border: 6px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 6px solid #3498db;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1>Network Speed Test & Nearby Networks</h1>
+    <div style="text-align: center;">
+        <button id="testSpeed">Test Network Speed</button>
+        <button id="checkNetworks">Check Available Networks</button>
+    </div>
+    <div id="result"></div>
+
+    <script>
+        // Function to show spinner during loading
+        function showSpinner() {
+            document.getElementById('result').innerHTML = '<div class="spinner"></div>';
+        }
+
+        // Network Speed Test
+        document.getElementById('testSpeed').addEventListener('click', function() {
+            showSpinner(); // Show spinner while testing speed
+            const startTime = new Date().getTime();
+            const image = new Image();
+            image.src = "https://www.gstatic.com/webp/gallery/1.jpg"; // Sample image for speed test
+            image.onload = function() {
+                const endTime = new Date().getTime();
+                const duration = (endTime - startTime) / 1000; // seconds
+                const imageSizeBytes = 102400; // Approximate size of image (in bytes)
+                const speed = (imageSizeBytes * 8) / (duration * 1024); // kbps
+                document.getElementById('result').innerHTML = `Download Speed: ${speed.toFixed(2)} Kbps`;
+            };
+        });
+
+        // Check Available Networks (Bluetooth & Wi-Fi placeholder)
+        document.getElementById('checkNetworks').addEventListener('click', function() {
+            showSpinner(); // Show spinner while checking networks
+
+            // Bluetooth scanning using Web Bluetooth API
+            navigator.bluetooth.requestDevice({
+                acceptAllDevices: true
+            })
+            .then(device => {
+                document.getElementById('result').innerHTML = `Nearby Bluetooth Device Found: ${device.name}`;
+            })
+            .catch(error => {
+                document.getElementById('result').innerHTML = `Error: ${error.message}`;
+            });
+
+            // Wi-Fi networks cannot be detected via browser, providing a fallback message
+            setTimeout(() => {
+                document.getElementById('result').innerHTML += '<br><br>Nearby Wi-Fi networks are unavailable due to browser limitations.';
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
